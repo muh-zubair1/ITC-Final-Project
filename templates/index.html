@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Books</title>
+    <style>
+      * {
+        font-family: Roboto, "Ubuntu Sans", Arial, sans-serif;
+        font-size: 14px;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 5px;
+      }
+      a:visited {
+        color: blue;
+      }
+    </style>
+    <script>
+        let books = [];
+        
+      function handleClick(bookId) {
+        // alert(bookId);
+        fetch(`/api/books/${bookId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            // alert(`BookId: ${data.bookid}\nTitle: ${data.title}`);
+            html = `<tr>
+                        <th>BookId</th>
+                        <td>
+                            ${data.bookid}
+                            <input type="hidden" name="bookid" value="${data.bookid}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                    <th>Title</th>
+                        <td>
+                            <textarea name="title" rows="3" cols="30">${data.title}</textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <button type="submit" onclick="handleSave(${data.bookid}, '${data.title}')">Save</button>
+                        </td>
+                    </tr>`;
+            document.querySelector("#edit tbody").innerHTML = html;
+          });
+      }
+      fetch("/api/books")
+        .then((response) => response.json())
+        .then((data) => {
+            books = data;
+          let html = ``;
+          books.forEach((book) => {
+            html += `<tr>
+                        <td>${book.bookid}</td>
+                        <td><a href="#!" onclick="handleClick(${book.bookid})">${book.title}</a></td>
+                    </tr>`;
+          });
+          document.querySelector("tbody").innerHTML = html;
+        });
+    </script>
+  </head>
+  <body>
+    <div style="display: flex">
+      <div>
+        <h2>Books</h2>
+        <table>
+          <thead>
+            <tr>
+              <td>Id</td>
+              <td>Title</td>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div>
+        <h2>Edit</h2>
+        
+        <table id="edit">
+            <tbody>
+
+            </tbody>
+        </table>
+        
+      </div>
+    </div>
+  </body>
+</html>

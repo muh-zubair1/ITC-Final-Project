@@ -24,8 +24,20 @@
       }
     </style>
     <script>
-        let books = [];
-        
+      let books = [];
+
+      function getUpdatedBook() {
+        handleSave({
+          bookid: document.querySelector("#bookid").value,
+          title: document.querySelector("#title").value,
+          status: document.querySelector("#status").value,
+        });
+      }
+
+      function handleSave(book) {
+        alert(`BookId: ${book.bookid}\n Title: ${book.title}\n Status: ${book.status}`);
+      }
+
       function handleClick(bookId) {
         // alert(bookId);
         fetch(`/api/books/${bookId}`)
@@ -36,32 +48,41 @@
                         <th>BookId</th>
                         <td>
                             ${data.bookid}
-                            <input type="hidden" name="bookid" value="${data.bookid}"/>
+                            <input type="hidden" id="bookid" value="${data.bookid}"/>
                         </td>
                     </tr>
                     <tr>
                     <th>Title</th>
                         <td>
-                            <textarea name="title" rows="3" cols="30">${data.title}</textarea>
+                            <textarea id="title" rows="3" cols="30">${data.title}</textarea>
                         </td>
                     </tr>
                     <tr>
+                        <th>Status</th>
+                        <td>
+                            <input type="text" id="status" value="${data.status}"/>
+                        </td>
+                    </tr>                    
+                    <tr>
                         <td colspan="2">
-                            <button type="submit" onclick="handleSave(${data.bookid}, '${data.title}')">Save</button>
+                            <button type="submit" onclick="getUpdatedBook()">Save</button>
                         </td>
                     </tr>`;
             document.querySelector("#edit tbody").innerHTML = html;
           });
       }
+
       fetch("/api/books")
         .then((response) => response.json())
         .then((data) => {
-            books = data;
+          console.log(data);
+          books = data;
           let html = ``;
           books.forEach((book) => {
             html += `<tr>
                         <td>${book.bookid}</td>
                         <td><a href="#!" onclick="handleClick(${book.bookid})">${book.title}</a></td>
+                        <td>${book.status}</td>
                     </tr>`;
           });
           document.querySelector("tbody").innerHTML = html;
@@ -75,8 +96,9 @@
         <table>
           <thead>
             <tr>
-              <td>Id</td>
-              <td>Title</td>
+              <th>Id</th>
+              <th>Title</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -84,13 +106,10 @@
       </div>
       <div>
         <h2>Edit</h2>
-        
-        <table id="edit">
-            <tbody>
 
-            </tbody>
+        <table id="edit">
+          <tbody></tbody>
         </table>
-        
       </div>
     </div>
   </body>

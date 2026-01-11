@@ -1,50 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Books</title>
     <style>
-      * {
-        font-family: Roboto, "Ubuntu Sans", Arial, sans-serif;
-        font-size: 14px;
-      }
-      table,
-      th,
-      td {
-        border: 1px solid black;
-        border-collapse: collapse;
-      }
-      th,
-      td {
-        padding: 5px;
-      }
-      a:visited {
-        color: blue;
-      }
+        * {
+            font-family: Roboto, "Ubuntu Sans", Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 5px;
+        }
+
+        a:visited {
+            color: blue;
+        }
     </style>
     <script>
-      let books = [];
+        function getSearch() {
+            const searchTerm = document.querySelector("#search").value.toLowerCase();
+            console.log(searchTerm)
+            
+            // Only search if searchTerm length is greater than 2
+            if (searchTerm.length > 2) {
+                fetch("/api/books/search", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ title: searchTerm }),
+                })
+                    .then((response) => response.json())
+                    .then((books) => {
+                        console.log(books);
+                        let html = ``;
+                        books.forEach((book) => {
+                            html += `<tr>
+                            <td>${book.bookid}</td>
+                            <td><a href="#!" onclick="handleClick(${book.bookid})">${book.title}</a></td>
+                            <td>${book.status}</td>
+                        </tr>`;
+                        });
+                        document.querySelector("tbody").innerHTML = html;
+                    });
+            } else if (searchTerm.length === 0) {
+                // If search is cleared, show all books
+                fetchBooks();
+            }
+        }
+        function handleSave() {
+            updated_book = {
+                bookid: document.querySelector("#bookid").value,
+                title: document.querySelector("#title").value,
+                status: document.querySelector("#status").value,
+            };
 
-      function getUpdatedBook() {
-        handleSave({
-          bookid: document.querySelector("#bookid").value,
-          title: document.querySelector("#title").value,
-          status: document.querySelector("#status").value,
-        });
-      }
+            fetch('/api/books/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updated_book),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log('Success:', data);
+                    document.querySelector("#edit").style.display = "none";
+                    fetchBooks();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
 
-      function handleSave(book) {
-        alert(`BookId: ${book.bookid}\n Title: ${book.title}\n Status: ${book.status}`);
-      }
-
-      function handleClick(bookId) {
-        // alert(bookId);
-        fetch(`/api/books/${bookId}`)
-          .then((response) => response.json())
-          .then((data) => {
-            // alert(`BookId: ${data.bookid}\nTitle: ${data.title}`);
-            html = `<tr>
+        function handleClick(bookId) {
+            // alert(bookId);
+            fetch(`/api/books/${bookId}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    // alert(`BookId: ${data.bookid}\nTitle: ${data.title}`);
+                    document.querySelector("#edit").style.display = "block";
+                    let html = `<tr>
                         <th>BookId</th>
                         <td>
                             ${data.bookid}
@@ -65,52 +112,58 @@
                     </tr>                    
                     <tr>
                         <td colspan="2">
-                            <button type="submit" onclick="getUpdatedBook()">Save</button>
+                            <button type="submit" onclick="handleSave()">Save</button>
                         </td>
                     </tr>`;
-            document.querySelector("#edit tbody").innerHTML = html;
-          });
-      }
+                    document.querySelector("#edit tbody").innerHTML = html;
+                });
+        }
 
-      fetch("/api/books")
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          books = data;
-          let html = ``;
-          books.forEach((book) => {
-            html += `<tr>
-                        <td>${book.bookid}</td>
-                        <td><a href="#!" onclick="handleClick(${book.bookid})">${book.title}</a></td>
-                        <td>${book.status}</td>
-                    </tr>`;
-          });
-          document.querySelector("tbody").innerHTML = html;
-        });
+        function fetchBooks() {
+            fetch("/api/books")
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    books = data;
+                    let html = ``;
+                    books.forEach((book) => {
+                        html += `<tr>
+                            <td>${book.bookid}</td>
+                            <td><a href="#!" onclick="handleClick(${book.bookid})">${book.title}</a></td>
+                            <td>${book.status}</td>
+                        </tr>`;
+                    });
+                    document.querySelector("tbody").innerHTML = html;
+                });
+        }
+        fetchBooks();
     </script>
-  </head>
-  <body>
-    <div style="display: flex">
-      <div>
-        <h2>Books</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Title</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <div>
-        <h2>Edit</h2>
+</head>
 
-        <table id="edit">
-          <tbody></tbody>
-        </table>
-      </div>
+<body>
+    <input type="text" name="search" id="search" placeholder="Search..." oninput="getSearch()" />
+    <div style="display: flex">
+        <div>
+            <h2>Books</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th style="width: 550px;">Title</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div id="edit" style="display: none;">
+            <h2>Edit</h2>
+
+            <table id="edit">
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
-  </body>
+</body>
+
 </html>

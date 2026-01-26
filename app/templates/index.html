@@ -1,169 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Books</title>
-    <style>
-        * {
-            font-family: Roboto, "Ubuntu Sans", Arial, sans-serif;
-            font-size: 14px;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cricket Players Dashboard</title>
 
-        table,
-        th,
-        td {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-        th,
-        td {
-            padding: 5px;
-        }
-
-        a:visited {
-            color: blue;
-        }
-    </style>
-    <script>
-        function getSearch() {
-            const searchTerm = document.querySelector("#search").value.toLowerCase();
-            console.log(searchTerm)
-            
-            // Only search if searchTerm length is greater than 2
-            if (searchTerm.length > 2) {
-                fetch("/api/books/search", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ title: searchTerm }),
-                })
-                    .then((response) => response.json())
-                    .then((books) => {
-                        console.log(books);
-                        let html = ``;
-                        books.forEach((book) => {
-                            html += `<tr>
-                            <td>${book.bookid}</td>
-                            <td><a href="#!" onclick="handleClick(${book.bookid})">${book.title}</a></td>
-                            <td>${book.status}</td>
-                        </tr>`;
-                        });
-                        document.querySelector("tbody").innerHTML = html;
-                    });
-            } else if (searchTerm.length === 0) {
-                // If search is cleared, show all books
-                fetchBooks();
-            }
-        }
-        function handleSave() {
-            updated_book = {
-                bookid: document.querySelector("#bookid").value,
-                title: document.querySelector("#title").value,
-                status: document.querySelector("#status").value,
-            };
-
-            fetch('/api/books/save', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updated_book),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log('Success:', data);
-                    document.querySelector("#edit").style.display = "none";
-                    fetchBooks();
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-        }
-
-        function handleClick(bookId) {
-            // alert(bookId);
-            fetch(`/api/books/${bookId}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    // alert(`BookId: ${data.bookid}\nTitle: ${data.title}`);
-                    document.querySelector("#edit").style.display = "block";
-                    let html = `<tr>
-                        <th>BookId</th>
-                        <td>
-                            ${data.bookid}
-                            <input type="hidden" id="bookid" value="${data.bookid}"/>
-                        </td>
-                    </tr>
-                    <tr>
-                    <th>Title</th>
-                        <td>
-                            <textarea id="title" rows="3" cols="30">${data.title}</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Status</th>
-                        <td>
-                            <input type="text" id="status" value="${data.status}"/>
-                        </td>
-                    </tr>                    
-                    <tr>
-                        <td colspan="2">
-                            <button type="submit" onclick="handleSave()">Save</button>
-                        </td>
-                    </tr>`;
-                    document.querySelector("#edit tbody").innerHTML = html;
-                });
-        }
-
-        function fetchBooks() {
-            fetch("/api/books")
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log(data);
-                    books = data;
-                    let html = ``;
-                    books.forEach((book) => {
-                        html += `<tr>
-                            <td>${book.bookid}</td>
-                            <td><a href="#!" onclick="handleClick(${book.bookid})">${book.title}</a></td>
-                            <td>${book.status}</td>
-                        </tr>`;
-                    });
-                    document.querySelector("tbody").innerHTML = html;
-                });
-        }
+  <script>
+    function getSearch() {
+      const searchTerm = document.querySelector("#search").value.toLowerCase();
+      if (searchTerm.length > 2) {
+        fetch("/api/books/search", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: searchTerm }),
+        })
+          .then(res => res.json())
+          .then(books => renderTable(books));
+      } else if (searchTerm.length === 0) {
         fetchBooks();
-    </script>
+      }
+    }
+
+    function handleSave() {
+      const updated_book = {
+        bookid: document.querySelector("#bookid").value,
+        title: document.querySelector("#title").value,
+        status: document.querySelector("#status").value,
+      };
+
+      fetch("/api/books/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated_book),
+      })
+        .then(res => res.json())
+        .then(() => {
+          document.querySelector("#editBox").classList.add("hidden");
+          fetchBooks();
+        });
+    }
+
+    function handleClick(bookId) {
+      fetch(`/api/books/${bookId}`)
+        .then(res => res.json())
+        .then(data => {
+          document.querySelector("#editBox").classList.remove("hidden");
+          document.querySelector("#editTable tbody").innerHTML = `
+            <tr>
+                <td class="font-semibold">Player ID</td>
+                <td>
+                ${data.bookid}
+                <input type="hidden" id="bookid" value="${data.bookid}">
+                </td>
+            </tr>
+            <tr>
+                <td class="font-semibold">Player Info</td>
+                <td>
+                <textarea id="title" class="w-full p-3 rounded bg-gray-100 text-black">${data.title}</textarea>
+                </td>
+            </tr>
+            <tr>
+                <td class="font-semibold">Highest Score</td>
+                <td>
+                <input id="status" class="w-full p-3 rounded bg-gray-100 text-black" value="${data.status}">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-right">
+                <button onclick="handleSave()" class="mt-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-5 py-2 rounded-lg shadow hover:scale-105 transition">
+                    Save Changes
+                </button>
+                </td>
+            </tr>
+            `;
+        });
+    }
+
+    function renderTable(books) {
+      let html = "";
+      books.forEach(book => {
+        html += `
+          <tr class="hover:bg-indigo-50 transition">
+            <td class="p-3">${book.bookid}</td>
+            <td class="p-3 font-medium text-indigo-600 cursor-pointer" onclick="handleClick(${book.bookid})">
+              ${book.title}
+            </td>
+            <td class="p-3">${book.status}</td>
+          </tr>
+        `;
+      });
+      document.querySelector("#playersBody").innerHTML = html;
+      document.querySelector("#count").innerText = books.length;
+    }
+
+    function fetchBooks() {
+      fetch("/api/books")
+        .then(res => res.json())
+        .then(data => renderTable(data));
+    }
+
+    fetchBooks();
+  </script>
 </head>
 
-<body>
-    <input type="text" name="search" id="search" placeholder="Search..." oninput="getSearch()" />
-    <div style="display: flex">
-        <div>
-            <h2>Books</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th style="width: 550px;">Title</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-        <div id="edit" style="display: none;">
-            <h2>Edit</h2>
+<body class="bg-gradient-to-br from-slate-900 to-indigo-900 min-h-screen text-white">
 
-            <table id="edit">
-                <tbody></tbody>
-            </table>
-        </div>
+  <!-- Header -->
+  <header class="p-6 text-center">
+    <h1 class="text-3xl font-extrabold tracking-wide">🏏 Cricket Players Dashboard</h1>
+    <p class="text-gray-300 mt-1">Modern CRUD Interface using Tailwind CSS</p>
+  </header>
+
+  <!-- Stats -->
+  <div class="max-w-6xl mx-auto px-6 mb-6">
+    <div class="bg-white/10 backdrop-blur rounded-xl p-4 flex justify-between items-center">
+      <span class="text-lg">Total Players</span>
+      <span id="count" class="text-2xl font-bold text-emerald-400">0</span>
     </div>
-</body>
+  </div>
 
+  <!-- Search -->
+  <div class="max-w-6xl mx-auto px-6 mb-6">
+    <input
+      id="search"
+      type="text"
+      placeholder="Search player name..."
+      oninput="getSearch()"
+      class="w-full p-3 rounded-xl bg-white/20 backdrop-blur text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+    />
+  </div>
+
+  <!-- Main Layout -->
+  <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- Table -->
+    <div class="lg:col-span-2 bg-white text-gray-800 rounded-xl shadow-lg overflow-hidden">
+      <table class="w-full">
+        <thead class="bg-indigo-600 text-white">
+          <tr>
+            <th class="p-3 text-left">ID</th>
+            <th class="p-3 text-left">Player</th>
+            <th class="p-3 text-left">Highest Score</th>
+          </tr>
+        </thead>
+        <tbody id="playersBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Edit Panel -->
+    <div id="editBox" class="hidden bg-white/20 backdrop-blur rounded-xl p-4 shadow-lg">
+      <h2 class="text-xl font-bold mb-3">Edit Player</h2>
+      <table id="editTable" class="w-full text-white">
+        <tbody></tbody>
+      </table>
+    </div>
+
+  </div>
+
+</body>
 </html>

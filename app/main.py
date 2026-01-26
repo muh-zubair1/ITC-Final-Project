@@ -1,64 +1,79 @@
 import flask
 import json
-from flask import Flask, request, render_template_string, render_template
+from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__)
 
-# Global books data
-books = []
+# Global players data
+players = []
 
-def load_books():
-    """Load books from JSON file into global books list"""
-    global books
-    with open('books.json', 'r') as f:
-        books = json.load(f)
+def load_players():
+    """Load players from JSON file into global players list"""
+    global players
+    try:
+        with open('players.json', 'r') as f:
+            players = json.load(f)
+    except FileNotFoundError:
+        print("Error: players.json not found.")
 
-# Initialize books data on startup
-load_books()
+# Initialize players data on startup
+load_players()
 
 # ---------------- Root Route ----------------
 @app.route("/")
 def index():
     return render_template('index.html')
 
-# ---------------- Books Route ----------------
-@app.route("/api/books")
-def get_books():
-    return flask.jsonify(books)
+# ---------------- API Routes ----------------
 
-@app.route("/api/books/<int:id>")
-def get_book_by_id(id):
-    for book in books:
-        if book['bookid'] == id:
-            return flask.jsonify(book)
-    return flask.jsonify({"error": "Book not found"}), 404
+@app.route("/api/players", methods=['GET'])
+def get_players():
+    return jsonify(players)
 
-@app.route("/api/books/save", methods=['POST'])
-def save_book():
-    new_book = request.get_json()
-    # Convert bookid to int for comparison
-    new_book['bookid'] = int(new_book['bookid'])
+@app.route("/api/players/<int:id>", methods=['GET'])
+def get_player_by_id(id):
+    # Looking for 'playerid' key from your JSON
+    player = next((p for p in players if p['playerid'] == id), None)
+    if player:
+        return jsonify(player)
+    return jsonify({"error": "Player not found"}), 404
+
+@app.route("/api/players/save", methods=['POST'])
+def save_player():
+    data = request.get_json()
     
-    for i, book in enumerate(books):
-        if book['bookid'] == new_book['bookid']:
-            books[i] = new_book
-            return flask.jsonify({"message": "Book updated successfully"}), 200 
+    # Ensure the incoming data has the correct ID
+    try:
+        target_id = int(data.get('playerid'))
+    except (ValueError, TypeError):
+        return jsonify({"error": "Invalid playerid provided"}), 400
+
+    for i, player in enumerate(players):
+        if player['playerid'] == target_id:
+            # Update using your JSON keys: 'title' and 'highest score'
+            players[i]['title'] = data.get('title', player['title'])
+            players[i]['highest score'] = data.get('highest score', player['highest score'])
             
-    return flask.jsonify({"error": "Book not found"}), 404
+            # Optional: Write back to file to make changes permanent
+            # with open('players.json', 'w') as f:
+            #     json.dump(players, f, indent=2)
+            
+            return jsonify({"message": "Player updated successfully"}), 200 
+            
+    return jsonify({"error": "Player not found"}), 404
 
-@app.route("/api/books/search", methods=['POST'])
-def serarch_books():
+@app.route("/api/players/search", methods=['POST'])
+def search_players(): # Fixed typo: serarch -> search
     criteria = request.get_json()
-    title = criteria.get('title', '').lower()
+    query = criteria.get('query', '').lower() # Changed key to 'query' for generic search
     
-    filtered_books = [
-        book for book in books
-        if (title in book['title'].lower() if title else True)
+    # Searches across both Title (Name/Country) and the ID
+    filtered_players = [
+        p for p in players 
+        if query in p['title'].lower() or query == str(p['playerid'])
     ]
     
-    return flask.jsonify(filtered_books)
+    return jsonify(filtered_players)
 
 if __name__ == "__main__":
-    # Development server — use `flask run` or a production server for deployment
     app.run(debug=True, host="0.0.0.0", port=5500)
-

@@ -1,127 +1,127 @@
 [
   {
-    "bookid": 1,
-    "status": 1,
+    "playerid": 1,
+    "highest score": 1,
     "title": "Babar Azam - Pakistan | Right-hand Batsman"
   },
   {
-    "bookid": 2,
-    "status": 1,
+    "playerid": 2,
+    "highest score": 1,
     "title": "Virat Kohli - India | Top-order Batsman"
   },
   {
-    "bookid": 3,
-    "status": 1,
+    "playerid": 3,
+    "highest score": 1,
     "title": "Kane Williamson - New Zealand | Batsman"
   },
   {
-    "bookid": 4,
-    "status": 1,
+    "playerid": 4,
+    "highest score": 1,
     "title": "Joe Root - England | Batsman"
   },
   {
-    "bookid": 5,
-    "status": 1,
+    "playerid": 5,
+    "highest score": 1,
     "title": "Rashid Khan - Afghanistan | Spin Bowler"
   },
   {
-    "bookid": 6,
-    "status": 1,
+    "playerid": 6,
+    "highest score": 1,
     "title": "Shaheen Afridi - Pakistan | Fast Bowler"
   },
   {
-    "bookid": 7,
-    "status": 1,
+    "playerid": 7,
+    "highest score": 1,
     "title": "Ben Stokes - England | All-rounder"
   },
   {
-    "bookid": 8,
-    "status": 1,
+    "playerid": 8,
+    "highest score": 1,
     "title": "David Warner - Australia | Opener"
   },
   {
-    "bookid": 9,
-    "status": 1,
+    "playerid": 9,
+    "highest score": 1,
     "title": "Jasprit Bumrah - India | Fast Bowler"
   },
   {
-    "bookid": 10,
-    "status": 1,
+    "playerid": 10,
+    "highest score": 1,
     "title": "Saim Ayub - Pakistan | Opening Batsman"
   },
   {
-    "bookid": 11,
-    "status": 1,
+    "playerid": 11,
+    "highest score": 1,
     "title": "MS Dhoni - India | Wicketkeeper Batsman"
   },
   {
-    "bookid": 12,
-    "status": 1,
+    "playerid": 12,
+    "highest score": 1,
     "title": "Rohit Sharma - India | Opening Batsman"
   },
   {
-    "bookid": 13,
-    "status": 1,
+    "playerid": 13,
+    "highest score": 1,
     "title": "Steve Smith - Australia | Batsman"
   },
   {
-    "bookid": 14,
-    "status": 1,
+    "playerid": 14,
+    "highest score": 1,
     "title": "AB de Villiers - South Africa | Batsman"
   },
   {
-    "bookid": 15,
-    "status": 1,
+    "playerid": 15,
+    "highest score": 1,
     "title": "Jos Buttler - England | Wicketkeeper Batsman"
   },
   {
-    "bookid": 16,
-    "status": 1,
+    "playerid": 16,
+    "highest score": 1,
     "title": "Shakib Al Hasan - Bangladesh | All-rounder"
   },
   {
-    "bookid": 17,
-    "status": 1,
+    "playerid": 17,
+    "highest score": 1,
     "title": "Trent Boult - New Zealand | Fast Bowler"
   },
   {
-    "bookid": 18,
-    "status": 1,
+    "playerid": 18,
+    "highest score": 1,
     "title": "Pat Cummins - Australia | Fast Bowler"
   },
   {
-    "bookid": 19,
-    "status": 1,
+    "playerid": 19,
+    "highest score": 1,
     "title": "Kagiso Rabada - South Africa | Fast Bowler"
   },
   {
-    "bookid": 20,
-    "status": 1,
+    "playerid": 20,
+    "highest score": 1,
     "title": "Quinton de Kock - South Africa | Wicketkeeper Batsman"
   },
   {
-    "bookid": 21,
-    "status": 1,
+    "playerid": 21,
+    "highest score": 1,
     "title": "Mohammad Rizwan - Pakistan | Wicketkeeper Batsman"
   },
   {
-    "bookid": 22,
-    "status": 1,
+    "playerid": 22,
+    "highest score": 1,
     "title": "Hardik Pandya - India | All-rounder"
   },
   {
-    "bookid": 23,
-    "status": 1,
+    "playerid": 23,
+    "highest score": 1,
     "title": "Glenn Maxwell - Australia | All-rounder"
   },
   {
-    "bookid": 24,
-    "status": 1,
+    "playerid": 24,
+    "highest score": 1,
     "title": "Fakhar Zaman - Pakistan | Opening Batsman"
   },
   {
-    "bookid": 25,
-    "status": 1,
+    "playerid": 25,
+    "highest score": 1,
     "title": "Muttiah Muralitharan - Sri Lanka | Spin Bowler"
   }
 ]

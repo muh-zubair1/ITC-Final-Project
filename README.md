@@ -1,7 +1,3 @@
-Group Members:
-  Muhammad Zubair (2512224)
-
-
 PROMPTS THAT WE USE IN CHATGPT/GEMINI FOR TAILWIND CSS:
 
 Prompt 01:
